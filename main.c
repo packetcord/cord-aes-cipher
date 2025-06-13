@@ -99,19 +99,25 @@ int main()
     //
     // Or if the key is also in row-major, just pass it as 1D array
     //
+    #ifndef PRE_SCHEDULED_KEY
     expand_key((uint8_t (*)[Nk])key_row_major, aes_expanded_key);
+    #endif
 #else
+    #ifndef PRE_SCHEDULED_KEY
     for (uint8_t n = 0; n < (Nb * Nk); n++)
         key_matrix[n % Nb][n / Nb] = key[n];
 
+    printf("Expanding the key...\n");
     expand_key(key_matrix, aes_expanded_key);
 
     for (uint8_t n = 0; n < (Nb * Nr) + Nb; n += Nb)
     {
         SWAP_SYMM_OFF_DIAG_ELEMENTS(aes_expanded_key, n);
     }
+    #endif
 #endif
 
+    printf("Using the pre-expanded (scheduled) key...\n");
     test_aes_block(input, aes_encrypt_block, aes_decrypt_block);
 
     return 0;

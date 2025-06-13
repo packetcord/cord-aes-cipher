@@ -8,6 +8,7 @@
 
 #define COLUMN_MAJOR_MODE
 #define AES_KEY_LEN_CONF 128
+// #define PRE_SCHEDULED_KEY
 
 #define SWAP(matrix, i1, j1, i2, j2) \
     t = matrix[i1][j1];              \
