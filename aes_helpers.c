@@ -64,3 +64,39 @@ void print_round_key_row_major(uint8_t key_matrix[4][AES_WORDS], uint8_t round)
         for (uint8_t j = 4 * round; j < (4 * round) + 4; j++)
             printf("0x%02X\n", key_matrix[i][j]);
 }
+
+void get_round_key_column_major(uint8_t key_matrix[4][AES_WORDS], uint8_t round, uint8_t current_round_key[AES_BLK_LEN])
+{
+    uint8_t n = 0;
+
+    if (round > Nr)
+        return;
+
+    for (uint8_t j = 4 * round; j < (4 * round) + 4; j++)
+        for (uint8_t i = 0; i < 4; i++)
+            current_round_key[n++] = key_matrix[i][j];
+}
+
+void get_round_key_row_major(uint8_t key_matrix[4][AES_WORDS], uint8_t round, uint8_t current_round_key[AES_BLK_LEN])
+{
+    uint8_t n = 0;
+
+    if (round > Nr)
+        return;
+
+    for (uint8_t i = 0; i < 4; i++)
+        for (uint8_t j = 4 * round; j < (4 * round) + 4; j++)
+            current_round_key[n++] = key_matrix[i][j];
+}
+
+void get_keys_foreach_round_column_major(uint8_t key_matrix[4][AES_WORDS], uint8_t nth_round_key_matrix[Nr + 1][AES_BLK_LEN])
+{
+    for (uint8_t n = 0; n < Nr + 1; n++)
+        get_round_key_column_major(key_matrix, n, nth_round_key_matrix[n]);
+}
+
+void get_keys_foreach_round_row_major(uint8_t key_matrix[4][AES_WORDS], uint8_t nth_round_key_matrix[Nr + 1][AES_BLK_LEN])
+{
+    for (uint8_t n = 0; n < Nr + 1; n++)
+        get_round_key_row_major(key_matrix, n, nth_round_key_matrix[n]);
+}
