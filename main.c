@@ -3,6 +3,7 @@
 //
 
 #include "aes_cipher.h"
+#include "aes_helpers.h"
 
 void print_block(const char *label, const uint8_t *block)
 {
@@ -119,6 +120,13 @@ int main()
 
     printf("Using the pre-expanded (scheduled) key...\n");
     test_aes_block(input, aes_encrypt_block, aes_decrypt_block);
+
+    uint8_t nth_round_key_matrix[Nr + 1][AES_BLK_LEN] = { { 0x00 } };
+
+    get_keys_foreach_round_column_major(aes_expanded_key, nth_round_key_matrix);
+    print_block("nth_round_key_matrix", nth_round_key_matrix[0]);
+
+    print_round_key_column_major(aes_expanded_key, 0);
 
     return 0;
 }
