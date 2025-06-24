@@ -197,7 +197,7 @@ This AES implementation adheres to the standard column-major memory layout by de
 
 > 💡 Note 1: Changing the layout does not alter the cryptographic strength of AES if used correctly — it simply changes how the internal state is interpreted and manipulated.
 
-> 💡 Note 2: When used in *pure software* mode, it will provide the same encrypted output. It is also possible to be used in hardware accelearated modes (AES-NI or NEON), but it will treat the key differently thus produce different encrypted output. We encourage you to experiment with this *feature* - you may discover interesting representation and obfuscation capabilities as well.
+> 💡 Note 2: When used with *pure software* implementation, it will provide the same encrypted output. It is also possible to be used in hardware accelearated implementations (AES-NI or NEON), but it will treat the key differently, thus produce different encrypted output. We encourage you to experiment - you may discover interesting representation and obfuscation capabilities as well.
 
 ### 🔧 Switch between layouts
 
