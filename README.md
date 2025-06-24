@@ -101,12 +101,12 @@ The CORD-AES library comes with the following helper function (inside *aes_helpe
 ```c
 void print_expanded_key(uint8_t expanded_key[Nb][AES_WORDS]);
 ```
-The example output for the original key 
+The example output for the original key:
 ```c
 uint8_t key[Nb * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C };
 ```
 
-looks as follows:
+After expansion it looks as follows:
 
 ```c
 //
@@ -118,7 +118,7 @@ uint8_t aes_expanded_key[Nb][AES_WORDS] = {{ 0x2B, 0x7E, 0x15, 0x16, 0xA0, 0xFA,
 { 0x09, 0xCF, 0x4F, 0x3C, 0x2A, 0x6C, 0x76, 0x05, 0x73, 0x59, 0xF6, 0x7F, 0x6D, 0x7A, 0x88, 0x3B, 0xDB, 0x0B, 0xAD, 0x00, 0x11, 0xF9, 0x15, 0xBC, 0xCA, 0x00, 0x93, 0xFD, 0x4E, 0xA6, 0xDC, 0x4F, 0x7F, 0x8D, 0x29, 0x2F, 0x57, 0x5C, 0x00, 0x6E, 0xB6, 0x63, 0x0C, 0xA6 }};
 ```
 
-So, one can first start coding on their PC, expand the
+So, one can first start coding on their PC, expand the key, export it and copy-paste the array (probably by also making it *const*) inside the embedded project. This way the scheduled key may be tuned to end up in the flash memory of the MCU instead of occupying the limited RAM. Currently, by default, the look-up tables and other arrays have already been set as *const*, so that they will eventually reside in the flash memory when used on a microcontroller with limited resources:
 ```c
 static const uint8_t inverse_sbox[256];
 static const uint8_t mul_by_2_lut[256];
