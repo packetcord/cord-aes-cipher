@@ -119,6 +119,7 @@ uint8_t aes_expanded_key[Nb][AES_WORDS] = {{ 0x2B, 0x7E, 0x15, 0x16, 0xA0, 0xFA,
 ```
 
 So, one can first start coding on their PC, expand the
+```c
 static const uint8_t inverse_sbox[256];
 static const uint8_t mul_by_2_lut[256];
 static const uint8_t mul_by_3_lut[256];
@@ -126,6 +127,7 @@ static const uint8_t mul_by_9_lut[256];
 static const uint8_t mul_by_11_lut[256];
 static const uint8_t mul_by_13_lut[256];
 static const uint8_t mul_by_14_lut[256];
+```
 
 ### 🧱 Hardware acceleration via the AES instructions (applies to x86-64, ARMv8)
 ... in progress ...
