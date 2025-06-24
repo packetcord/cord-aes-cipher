@@ -118,8 +118,14 @@ uint8_t aes_expanded_key[Nb][AES_WORDS] = {{ 0x2B, 0x7E, 0x15, 0x16, 0xA0, 0xFA,
 { 0x09, 0xCF, 0x4F, 0x3C, 0x2A, 0x6C, 0x76, 0x05, 0x73, 0x59, 0xF6, 0x7F, 0x6D, 0x7A, 0x88, 0x3B, 0xDB, 0x0B, 0xAD, 0x00, 0x11, 0xF9, 0x15, 0xBC, 0xCA, 0x00, 0x93, 0xFD, 0x4E, 0xA6, 0xDC, 0x4F, 0x7F, 0x8D, 0x29, 0x2F, 0x57, 0x5C, 0x00, 0x6E, 0xB6, 0x63, 0x0C, 0xA6 }};
 ```
 
-So, one can first start coding on their PC, expand the key, export it and copy-paste the array (probably by also making it *const*) inside the embedded project. This way the scheduled key may be tuned to end up in the flash memory of the MCU instead of occupying the limited RAM. Currently, by default, the look-up tables and other arrays have already been set as *const*, so that they will eventually reside in the flash memory when used on a microcontroller with limited resources:
+So, one can first start coding on their PC, expand the key, export it and copy-paste the array (probably by also making it *const*) inside the embedded project. This way the scheduled key may be tuned to end up in the flash memory of the MCU instead of occupying the limited RAM.
+
+> ⚠️ **Note**: The same approach could (or even should) be applied to the above mentioned look-up tables used for the implementations of *Mix Columns* and *Inverse Mix Columns*.
+
+Currently, by default, the look-up tables and other arrays have already been set as *const*, so that they will eventually reside in the flash memory when used on a microcontroller with limited resources:
 ```c
+static const uint8_t round_constants_arr[11];
+static const uint8_t sbox[256];
 static const uint8_t inverse_sbox[256];
 static const uint8_t mul_by_2_lut[256];
 static const uint8_t mul_by_3_lut[256];
