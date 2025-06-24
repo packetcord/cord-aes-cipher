@@ -126,7 +126,6 @@ static const uint8_t mul_by_9_lut[256];
 static const uint8_t mul_by_11_lut[256];
 static const uint8_t mul_by_13_lut[256];
 static const uint8_t mul_by_14_lut[256];
-```
 
 ### 🧱 Hardware acceleration via the AES instructions (applies to x86-64, ARMv8)
 ... in progress ...
