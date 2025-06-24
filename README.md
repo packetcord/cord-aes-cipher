@@ -1,6 +1,6 @@
 # 🔐 CORD-AES
 
-Highly configurable AES-128/192/256 cipher implementation to work on any device from small microcontrollers to the latest hardware crypto-accelerated CPUs (Intel/AMD/ARMv8/RISC-V).
+Highly configurable AES-128/192/256 cipher implementation to work on any device from small microcontrollers to the latest hardware crypto-accelerated CPUs (Intel/AMD/ARMv8).
 
 > ⚠️ **Note**: This library focuses on the **core AES cipher**, providing a standalone, mode-agnostic engine suitable for integration into higher-level encryption schemes.
 Cipher modes such as CBC, CTR, and GCM are about to be implemented separately.
@@ -118,14 +118,7 @@ uint8_t aes_expanded_key[Nb][AES_WORDS] = {{ 0x2B, 0x7E, 0x15, 0x16, 0xA0, 0xFA,
 { 0x09, 0xCF, 0x4F, 0x3C, 0x2A, 0x6C, 0x76, 0x05, 0x73, 0x59, 0xF6, 0x7F, 0x6D, 0x7A, 0x88, 0x3B, 0xDB, 0x0B, 0xAD, 0x00, 0x11, 0xF9, 0x15, 0xBC, 0xCA, 0x00, 0x93, 0xFD, 0x4E, 0xA6, 0xDC, 0x4F, 0x7F, 0x8D, 0x29, 0x2F, 0x57, 0x5C, 0x00, 0x6E, 0xB6, 0x63, 0x0C, 0xA6 }};
 ```
 
-So, one can first start coding on their PC, expand the key, export it and copy-paste the array (probably by also making it *const*) inside the embedded project. This way the scheduled key may be tuned to end up in the flash memory of the MCU instead of occupying the limited RAM.
-
-> ⚠️ **Note**: The same approach could (or even should) be applied to the above mentioned look-up tables used for the implementations of *Mix Columns* and *Inverse Mix Columns*.
-
-Currently, by default, the look-up tables and other arrays have already been set as *const*, so that they will eventually reside in the flash memory when used on a microcontroller with limited resources:
-```c
-static const uint8_t round_constants_arr[11];
-static const uint8_t sbox[256];
+So, one can first start coding on their PC, expand the
 static const uint8_t inverse_sbox[256];
 static const uint8_t mul_by_2_lut[256];
 static const uint8_t mul_by_3_lut[256];
@@ -135,7 +128,7 @@ static const uint8_t mul_by_13_lut[256];
 static const uint8_t mul_by_14_lut[256];
 ```
 
-### 🧱 Hardware acceleration via the AES instructions (applies to x86-64, ARMv8 and RISC-V)
+### 🧱 Hardware acceleration via the AES instructions (applies to x86-64, ARMv8)
 ... in progress ...
 
 ### 📐 X-Major Order (Column or Row)
@@ -156,56 +149,59 @@ Consider the below 16-byte array:
 
 ```cpp
 uint8_t buffer[16] = {
-  0x2B, 0x7E, 0x15, 0x16,
-  0x28, 0xAE, 0xD2, 0xA6,
-  0xAB, 0xF7, 0x15, 0x88,
-  0x09, 0xCF, 0x4F, 0x3C
+  0x00, 0x01, 0x02, 0x03,
+  0x04, 0x05, 0x06, 0x07,
+  0x08, 0x09, 0x0A, 0x0B,
+  0x0C, 0x0D, 0x0E, 0x0F
 };
 ```
 
 ### 📦 Column-Major Representation (Default in AES)
 AES fills the state matrix in column-major order by default:
 ```
-| 0x2B  0x28  0xAB  0x09 |
-| 0x7E  0xAE  0xF7  0xCF |
-| 0x15  0xD2  0x15  0x4F |
-| 0x16  0xA6  0x88  0x3C |
+| 0x00  0x04  0x08  0x0C |
+| 0x01  0x05  0x09  0x0D |
+| 0x02  0x06  0x0A  0x0E |
+| 0x03  0x07  0x0B  0x0F |
 ```
 This is represented as:
 ```
-Column 0: 0x2B, 0x7E, 0x15, 0x16
-Column 1: 0x28, 0xAE, 0xD2, 0xA6  
-Column 2: 0xAB, 0xF7, 0x15, 0x88  
-Column 3: 0x09, 0xCF, 0x4F, 0x3C
+Column 0: 0x00, 0x01, 0x02, 0x03
+Column 1: 0x04, 0x05, 0x06, 0x07
+Column 2: 0x08, 0x09, 0x0A, 0x0B
+Column 3: 0x0C, 0x0D, 0x0E, 0x0F
 ```
 
 ### 📦 Row-Major Representation
 In row-major order, the state matrix would look like this:
 ```
-| 0x2B  0x7E  0x15  0x16 |
-| 0x28  0xAE  0xD2  0xA6 |
-| 0xAB  0xF7  0x15  0x88 |
-| 0x09  0xCF  0x4F  0x3C |
+| 0x00  0x01  0x02  0x03 |
+| 0x04  0x05  0x06  0x07 |
+| 0x08  0x09  0x0A  0x0B |
+| 0x0C  0x0D  0x0E  0x0F |
 ```
 Similarly, this is represented as:
 ```
-Row 0: 0x2B, 0x7E, 0x15, 0x16  
-Row 1: 0x28, 0xAE, 0xD2, 0xA6  
-Row 2: 0xAB, 0xF7, 0x15, 0x88  
-Row 3: 0x09, 0xCF, 0x4F, 0x3C
+Row 0: 0x00, 0x01, 0x02, 0x03
+Row 1: 0x04, 0x05, 0x06, 0x07
+Row 2: 0x08, 0x09, 0x0A, 0x0B
+Row 3: 0x0C, 0x0D, 0x0E, 0x0F
 ```
 
 ### 🧬 Flexibility in the AES-CORD Library
 This AES implementation adheres to the standard column-major memory layout by default. However, for advanced use cases, experimentation, or obfuscation, you can switch to row-major layout easily.
 
 ### ✅ Possible Benefits of Layout Switching
-- 🔄 **Better integration** with certain memory layouts or data sources.
+- 🔄 **Zero-copy integration** with different data sources and data representations. The library explicitly targets the zero-copy approach - all mapping transformations are done on the key and take place only in the initialisation phase.
 - 🚧 **Slightly more obfuscated output** that may slow down naive reverse engineering.
 - 🧪 **Custom experimentation** with non-standard AES behavior (as long as transformations remain consistent).
 
-> 💡 Note: Changing the layout doesn't alter the cryptographic strength of AES if used correctly — it simply changes how the internal state is interpreted and manipulated.
+> 💡 Note 1: Changing the layout does not alter the cryptographic strength of AES if used correctly — it simply changes how the internal state is interpreted and manipulated.
+
+> 💡 Note 2: When used in *pure software* mode, it will provide the same encrypted output. It is also possible to be used in hardware accelearated modes (AES-NI or NEON), but it will treat the key differently thus produce different encrypted output. We encourage you to experiment with this *feature* - you may discover interesting representation and obfuscation capabilities as well.
 
 ### 🔧 Switch between layouts
+
 The following macro defines the default column-major layout:
 ```c
 #define COLUMN_MAJOR_MODE
