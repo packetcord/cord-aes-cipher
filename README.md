@@ -13,7 +13,7 @@ To compile the example, run the following command in the root directory:
 gcc -I includes/ -o main main.c src/aes_cipher.c src/aes_helpers.c
 ```
 
-- **For the ARMv8 NEON accelerated implementation**
+- **For the *ARMv8 NEON* accelerated implementation**
 ```bash
 gcc -I includes/ -march=armv8-a+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
 
@@ -21,7 +21,7 @@ gcc -I includes/ -march=armv8-a+crypto -o main main.c src/aes_cipher.c src/aes_h
 gcc -I includes/ -mcpu=cortex-a53+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
 ```
 
-- **For the x86-64 AES_NI (both for AMD and Intel) accelerated implementation**
+- **For the *x86-64 AES_NI* (both for AMD and Intel) accelerated implementation**
 ```bash
 TBD
 ```
