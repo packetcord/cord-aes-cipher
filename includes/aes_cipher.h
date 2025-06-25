@@ -6,6 +6,12 @@
 #include <stdint.h>
 #include <string.h>
 
+// #define ARM_NEON_AES_ACCEL
+
+#ifdef ARM_NEON_AES_ACCEL
+#include <arm_neon.h>
+#endif
+
 #define COLUMN_MAJOR_MODE
 #define AES_KEY_LEN_CONF 128
 // #define PRE_SCHEDULED_KEY
@@ -97,7 +103,7 @@ static const uint8_t mul_by_11_lut[256];
 static const uint8_t mul_by_13_lut[256];
 static const uint8_t mul_by_14_lut[256];
 
-void expand_key(uint8_t K[4][Nk], uint8_t W[4][AES_WORDS]);
+void expand_key(uint8_t K[Nb][Nk], uint8_t W[Nb][AES_WORDS]);
 uint8_t multiply(uint8_t x, uint8_t y);
 void aes_mix_columns(uint8_t state[AES_BLK_LEN]);
 void aes_inverse_mix_columns(uint8_t state[AES_BLK_LEN]);
@@ -114,3 +120,10 @@ void aes_encrypt_final_round(uint8_t *state);
 void aes_decrypt_final_round(uint8_t *state);
 void aes_encrypt_block(uint8_t *block);
 void aes_decrypt_block(uint8_t *block);
+
+#ifdef ARM_NEON_AES_ACCEL
+void neon_aes_encrypt(const uint8_t *input, uint8_t *output, const uint8x16_t *encr_round_key);
+void neon_aes_decrypt(const uint8_t *input, uint8_t *output, const uint8x16_t *decr_round_key);
+void neon_aes_encrypt_single_buffer(uint8_t *state, const uint8x16_t *encr_round_key);
+void neon_aes_decrypt_single_buffer(uint8_t *state, const uint8x16_t *decr_round_key);
+#endif

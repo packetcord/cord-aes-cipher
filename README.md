@@ -8,11 +8,25 @@ Cipher modes such as CBC, CTR, and GCM are about to be implemented separately.
 ## 🔧 Build Instructions
 To compile the example, run the following command in the root directory:
 
+- **For the *pure software* implementation**
 ```bash
-gcc -o main main.c aes_cipher.c aes_helpers.c
+gcc -I includes/ -o main main.c src/aes_cipher.c src/aes_helpers.c
 ```
 
-and simply run the example via:
+- **For the ARMv8 NEON accelerated implementation**
+```bash
+gcc -I includes/ -march=armv8-a+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
+
+// Or you can even be a bit more specific with the exact core (an example with Toradex Verdin iMX8M Mini with Cortex-A53)
+gcc -I includes/ -mcpu=cortex-a53+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
+```
+
+- **For the x86-64 AES_NI (both for AMD and Intel) accelerated implementation**
+```bash
+TBD
+```
+
+**and simply run the example via:**
 ```bash
 ./main
 ```

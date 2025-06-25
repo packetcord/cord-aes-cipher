@@ -4,42 +4,9 @@
 
 #include "aes_cipher.h"
 #include "aes_helpers.h"
-
-void print_block(const char *label, const uint8_t *block)
-{
-    printf("\n%s:", label);
-    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
-    {
-        if (i % 4 == 0) printf("\n");
-        printf("0x%02X ", block[i]);
-    }
-
-    printf("\n");
-}
-
-int test_aes_block(uint8_t *input, void (*aes_encrypt_block)(uint8_t *), void (*aes_decrypt_block)(uint8_t *))
-{
-    uint8_t ref_input[AES_BLK_LEN];
-    memcpy(ref_input, input, AES_BLK_LEN);
-
-    print_block("Plain", input);
-
-    aes_encrypt_block(input);
-    print_block("Encrypted", input);
-
-    aes_decrypt_block(input);
-    print_block("Decrypted", input);
-
-    for (uint8_t i = 0; i < AES_BLK_LEN; i++) {
-        if (input[i] != ref_input[i]) {
-            printf("\n\nFAILED!\n");
-            return 0;
-        }
-    }
-
-    printf("\n\nSUCCESS!\n");
-    return 1;
-}
+#ifdef ARM_NEON_AES_ACCEL
+#include <arm_neon.h>
+#endif
 
 int main()
 {
@@ -56,29 +23,29 @@ int main()
 #endif
 
 #if AES_KEY_LEN_CONF == 128
-    uint8_t key[4 * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C };
+    uint8_t key[Nb * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C };
 
-    uint8_t key_row_major[4 * Nk] = {
+    uint8_t key_row_major[Nb * Nk] = {
         0x2B, 0x28, 0xAB, 0x09,
         0x7E, 0xAE, 0xF7, 0xCF,
         0x15, 0xD2, 0x15, 0x4F,
         0x16, 0xA6, 0x88, 0x3C
     };
 #elif AES_KEY_LEN_CONF == 192
-    uint8_t key[4 * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C, 
+    uint8_t key[Nb * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C, 
                             0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6 };
 
-    uint8_t key_row_major[4 * Nk] = {
+    uint8_t key_row_major[Nb * Nk] = {
         0x2B, 0x28, 0xAB, 0x09, 0x2B, 0x28,
         0x7E, 0xAE, 0xF7, 0xCF, 0x7E, 0xAE,
         0x15, 0xD2, 0x15, 0x4F, 0x15, 0xD2,
         0x16, 0xA6, 0x88, 0x3C, 0x16, 0xA6
     };
 #elif AES_KEY_LEN_CONF == 256
-    uint8_t key[4 * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C,
+    uint8_t key[Nb * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C,
                             0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C };
 
-    uint8_t key_row_major[4 * Nk] = {
+    uint8_t key_row_major[Nb * Nk] = {
         0x2B, 0x28, 0xAB, 0x09, 0x2B, 0x28, 0xAB, 0x09,
         0x7E, 0xAE, 0xF7, 0xCF, 0x7E, 0xAE, 0xF7, 0xCF,
         0x15, 0xD2, 0x15, 0x4F, 0x15, 0xD2, 0x15, 0x4F,
@@ -108,7 +75,6 @@ int main()
     for (uint8_t n = 0; n < (Nb * Nk); n++)
         key_matrix[n % Nb][n / Nb] = key[n];
 
-    printf("Expanding the key...\n");
     expand_key(key_matrix, aes_expanded_key);
 
     for (uint8_t n = 0; n < (Nb * Nr) + Nb; n += Nb)
@@ -118,15 +84,103 @@ int main()
     #endif
 #endif
 
-    printf("Using the pre-expanded (scheduled) key...\n");
-    test_aes_block(input, aes_encrypt_block, aes_decrypt_block);
+    uint8_t  ref_input[AES_BLK_LEN] = { 0 };
+    printf("\n\nPlain:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", input[i]);
+        ref_input[i] = input[i];
+    }
 
-    uint8_t nth_round_key_matrix[Nr + 1][AES_BLK_LEN] = { { 0x00 } };
+    //
+    // Pure-SW implementation
+    //
+    printf("\n\nPure-SW implementation test...\n");
 
-    get_keys_foreach_round_column_major(aes_expanded_key, nth_round_key_matrix);
-    print_block("nth_round_key_matrix", nth_round_key_matrix[0]);
+    aes_encrypt_block(input);
+    printf("\nEncrypted:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", input[i]);
+    }
 
-    print_round_key_column_major(aes_expanded_key, 0);
+    aes_decrypt_block(input);
+    printf("\n\nDecrypted:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", input[i]);
+    }
+
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if (input[i] != ref_input[i])
+        {
+            printf("\n\nPure-SW implementation FAILED!\n");
+            return 0;
+        }
+    }
+
+    printf("\n\nPure-SW implementation SUCCESS!\n");
+
+#ifdef ARM_NEON_AES_ACCEL
+    //
+    // ARMv8 NEON AES accelerated implementation
+    //
+    printf("\n\nARM NEON acceleration test...\n");
+
+    for (uint8_t n = 0; n < (Nb * Nk); n++)
+        key_matrix[n % Nb][n / Nb] = key[n];
+
+    expand_key(key_matrix, aes_expanded_key);
+
+    uint8x16_t encr_round_keys[Nr + 1];
+    uint8x16_t decr_round_keys[Nr + 1];
+    neon_get_keys_foreach_round_column_major_u8x16(aes_expanded_key, encr_round_keys, decr_round_keys);
+
+    printf("\nPlain:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", input[i]);
+    }
+
+    neon_aes_encrypt(input, output, encr_round_keys);
+    printf("\n\nNEON accel. encrypted:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", output[i]);
+    }
+
+    neon_aes_decrypt(output, input, decr_round_keys);
+    printf("\n\nNEON accel. decrypted:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", input[i]);
+    }
+
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if (input[i] != ref_input[i])
+        {
+            printf("\n\nNEON accel. implementation FAILED!\n");
+            return 0;
+        }
+    }
+
+    printf("\n\nNEON accel. implementation SUCCESS!\n");
+
+#endif
 
     return 0;
 }
