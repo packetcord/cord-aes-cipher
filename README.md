@@ -16,8 +16,9 @@ gcc -I includes/ -o main main.c src/aes_cipher.c src/aes_helpers.c
 - **For the *ARMv8 NEON* accelerated implementation**
 ```bash
 gcc -I includes/ -march=armv8-a+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
-
-// Or you can even be a bit more specific with the exact core (an example with Toradex Verdin iMX8M Mini with Cortex-A53)
+```
+Or you can even be a bit more specific with the exact core - an example with Toradex Verdin iMX8M Mini based on Cortex-A53 is given below:
+```bash
 gcc -I includes/ -mcpu=cortex-a53+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
 ```
 
@@ -26,7 +27,7 @@ gcc -I includes/ -mcpu=cortex-a53+crypto -o main main.c src/aes_cipher.c src/aes
 TBD
 ```
 
-**and simply run the example via:**
+**And simply run the example via:**
 ```bash
 ./main
 ```
