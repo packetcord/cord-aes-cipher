@@ -32,8 +32,6 @@ TBD
 ./main
 ```
 
-> 💡 Note: In your project you can only the **aes_cipher.h** and **aes_cipher.c** files (maybe copy-paste them) and ignore the rest.
-
 In case you are intersted in more details related to AES, the library implementation and its fine tuning capabilities, you can continue reading the below lines...
 
 ## 🧠 What is AES?
