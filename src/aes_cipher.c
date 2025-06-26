@@ -429,39 +429,39 @@ void aes_decrypt_block(uint8_t *block)
 #ifdef ARM_NEON_AES_ACCEL
 void neon_aes_encrypt(const uint8_t *input, uint8_t *output, const uint8x16_t *encr_round_key)
 {
-    uint8x16_t state = vld1q_u8(input);
+    uint8x16_t block = vld1q_u8(input);
 
     for (uint8_t i = 0; i < Nr - 1; i++)
     {
-        state = vaeseq_u8(state, encr_round_key[i]);
-        state = vaesmcq_u8(state);
+        block = vaeseq_u8(block, encr_round_key[i]);
+        block = vaesmcq_u8(block);
     }
 
-    state = vaeseq_u8(state, encr_round_key[Nr - 1]);
-    state = veorq_u8(state, encr_round_key[Nr]);
+    block = vaeseq_u8(block, encr_round_key[Nr - 1]);
+    block = veorq_u8(block, encr_round_key[Nr]);
 
-    vst1q_u8(output, state);
+    vst1q_u8(output, block);
 }
 
 void neon_aes_decrypt(const uint8_t *input, uint8_t *output, const uint8x16_t *decr_round_key)
 {
-    uint8x16_t state = vld1q_u8(input);
+    uint8x16_t block = vld1q_u8(input);
 
     for (uint8_t i = 0; i < Nr - 1; i++)
     {
-        state = vaesdq_u8(state, decr_round_key[i]);
-        state = vaesimcq_u8(state);
+        block = vaesdq_u8(block, decr_round_key[i]);
+        block = vaesimcq_u8(block);
     }
 
-    state = vaesdq_u8(state, decr_round_key[Nr - 1]);
-    state = veorq_u8(state, decr_round_key[Nr]);
+    block = vaesdq_u8(block, decr_round_key[Nr - 1]);
+    block = veorq_u8(block, decr_round_key[Nr]);
 
-    vst1q_u8(output, state);
+    vst1q_u8(output, block);
 }
 
-void neon_aes_encrypt_single_buffer(uint8_t *state, const uint8x16_t *encr_round_key)
+void neon_aes_encrypt_single_buffer(uint8_t *block, const uint8x16_t *encr_round_key)
 {
-    uint8x16_t temp = vld1q_u8(state);
+    uint8x16_t temp = vld1q_u8(block);
 
     for (uint8_t i = 0; i < Nr - 1; i++)
     {
@@ -472,12 +472,12 @@ void neon_aes_encrypt_single_buffer(uint8_t *state, const uint8x16_t *encr_round
     temp = vaeseq_u8(temp, encr_round_key[Nr - 1]);
     temp = veorq_u8(temp, encr_round_key[Nr]);
 
-    vst1q_u8(state, temp);
+    vst1q_u8(block, temp);
 }
 
-void neon_aes_decrypt_single_buffer(uint8_t *state, const uint8x16_t *decr_round_key)
+void neon_aes_decrypt_single_buffer(uint8_t *block, const uint8x16_t *decr_round_key)
 {
-    uint8x16_t temp = vld1q_u8(state);
+    uint8x16_t temp = vld1q_u8(block);
 
     for (uint8_t i = 0; i < Nr - 1; i++)
     {
@@ -488,6 +488,6 @@ void neon_aes_decrypt_single_buffer(uint8_t *state, const uint8x16_t *decr_round
     temp = vaesdq_u8(temp, decr_round_key[Nr - 1]);
     temp = veorq_u8(temp, decr_round_key[Nr]);
 
-    vst1q_u8(state, temp);
+    vst1q_u8(block, temp);
 }
 #endif
