@@ -1,9 +1,7 @@
 # 🔐 CORD-AES
-[![License](https://img.shields.io/github/license/packetcord/cord-aes)](https://github.com/packetcord/cord-aes/blob/main/LICENSE)
-[![Lines of Code](https://img.shields.io/tokei/lines/github/packetcord/cord-aes)](https://github.com/packetcord/cord-aes)
-[![Pure Software](https://img.shields.io/badge/Pure‑Software‑Implementation‑blue)](https://github.com/packetcord/cord-aes)
-[![AES‑NI Acceleration](https://img.shields.io/badge/AES--NI‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
-[![NEON Acceleration](https://img.shields.io/badge/NEON‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
+[![Pure Software](https://img.shields.io/badge/Feature-Pure--Software-brightgreen)](https://github.com/packetcord/cord-aes)
+[![AES‑NI Acceleration](https://img.shields.io/badge/Feature-AES--NI‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
+[![NEON Acceleration](https://img.shields.io/badge/Feature-NEON‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
 
 Highly configurable AES-128/192/256 cipher implementation to work on any device from small microcontrollers to the latest hardware crypto-accelerated CPUs (Intel/AMD/ARMv8).
 
