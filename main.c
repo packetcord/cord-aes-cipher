@@ -179,7 +179,40 @@ int main()
     }
 
     printf("\n\nNEON accel. implementation SUCCESS!\n");
+#endif
 
+#ifdef X86_64_AESNI_ACCEL
+    printf("\nx86-64 AES-NI acceleration test...\n");
+
+    for (uint8_t n = 0; n < (Nb * Nk); n++)
+        key_matrix[n % Nb][n / Nb] = key[n];
+
+    expand_key(key_matrix, aes_expanded_key); // Or maybe rewrite it to utilise _mm_aeskeygenassist_si128, but we'll skip this for now since it won't affect the encrypt/decrypt operations performance.
+
+    __m128i encr_round_keys[Nr + 1];
+    __m128i decr_round_keys[Nr + 1];
+
+    aesni_get_keys_foreach_round_column_major(aes_expanded_key, encr_round_keys, decr_round_keys);
+
+    aesni_encrypt(input, encr_round_keys);
+    printf("\nAES-NI accel. encrypted:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", input[i]);
+    }
+
+    aesni_decrypt(input, decr_round_keys);
+    printf("\n\nAES-NI accel. decrypted:");
+    for (uint8_t i = 0; i < AES_BLK_LEN; i++)
+    {
+        if ( i % 4 == 0 )
+            printf("\n");
+        printf("0x%02X ", input[i]);
+    }
+
+    printf("\n\nAES-NI accel. implementation SUCCESS!\n");
 #endif
 
     return 0;

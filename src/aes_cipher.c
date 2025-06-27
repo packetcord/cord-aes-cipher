@@ -491,3 +491,41 @@ void neon_aes_decrypt_single_buffer(uint8_t *block, const uint8x16_t *decr_round
     vst1q_u8(block, temp);
 }
 #endif
+
+#ifdef X86_64_AESNI_ACCEL
+void aesni_encrypt(uint8_t *block, const __m128i *encr_round_key)
+{
+    __m128i temp = _mm_loadu_si128((__m128i *)block);
+
+    temp = _mm_xor_si128(temp, encr_round_key[0]);
+
+    for (uint8_t i = 1; i < Nr - 1; i += 2)
+    {
+        temp = _mm_aesenc_si128(temp, encr_round_key[i]);
+        temp = _mm_aesenc_si128(temp, encr_round_key[i + 1]);
+    }
+
+    temp = _mm_aesenc_si128(temp, encr_round_key[Nr - 1]);
+    temp = _mm_aesenclast_si128(temp, encr_round_key[Nr]);
+
+    _mm_storeu_si128((__m128i *)block, temp);
+}
+
+void aesni_decrypt(uint8_t *block, const __m128i *decr_round_key)
+{
+    __m128i temp = _mm_loadu_si128((__m128i *)block);
+
+    temp = _mm_xor_si128(temp, decr_round_key[0]);
+
+    for (uint8_t i = 1; i < Nr - 1; i += 2)
+    {
+        temp = _mm_aesdec_si128(temp, decr_round_key[i]);
+        temp = _mm_aesdec_si128(temp, decr_round_key[i + 1]);
+    }
+
+    temp = _mm_aesdec_si128(temp, decr_round_key[Nr - 1]);
+    temp = _mm_aesdeclast_si128(temp, decr_round_key[Nr]);
+
+    _mm_storeu_si128((__m128i *)block, temp);
+}
+#endif

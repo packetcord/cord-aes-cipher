@@ -9,6 +9,13 @@ void neon_get_keys_foreach_round_column_major_u8x16(uint8_t expanded_key[Nb][AES
 void neon_get_keys_foreach_round_row_major_u8x16(uint8_t expanded_key[Nb][AES_WORDS], uint8x16_t encr_round_keys[Nr + 1], uint8x16_t decr_round_keys[Nr + 1]);
 #endif
 
+#ifdef X86_64_AESNI_ACCEL
+#include <emmintrin.h>
+#include <wmmintrin.h>
+void aesni_get_keys_foreach_round_column_major(uint8_t expanded_key[Nb][AES_WORDS], __m128i encr_round_keys[Nr + 1], __m128i decr_round_keys[Nr + 1]);
+void aesni_get_keys_foreach_round_row_major(uint8_t expanded_key[Nb][AES_WORDS], __m128i encr_round_keys[Nr + 1], __m128i decr_round_keys[Nr + 1]);
+#endif
+
 void print_expanded_key(uint8_t expanded_key[Nb][AES_WORDS]);
 uint8_t round_const(uint8_t ri);
 void generate_round_constants(uint8_t *rc_array, uint8_t nth_constant);

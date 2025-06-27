@@ -6,15 +6,35 @@
 #include <stdint.h>
 #include <string.h>
 
+//
+// Key length
+//
+#define AES_KEY_LEN_CONF 128
+
+//
+// Hardware acceleration
+//
+#define X86_64_AESNI_ACCEL
 // #define ARM_NEON_AES_ACCEL
+
+//
+// Pre-scheduled key
+//
+// #define PRE_SCHEDULED_KEY
+
+//
+// Column-major or row-major mode (representation)
+//
+#define COLUMN_MAJOR_MODE
 
 #ifdef ARM_NEON_AES_ACCEL
 #include <arm_neon.h>
 #endif
 
-#define COLUMN_MAJOR_MODE
-#define AES_KEY_LEN_CONF 128
-// #define PRE_SCHEDULED_KEY
+#ifdef X86_64_AESNI_ACCEL
+#include <emmintrin.h>
+#include <wmmintrin.h>
+#endif
 
 #define SWAP(matrix, i1, j1, i2, j2) \
     t = matrix[i1][j1];              \
@@ -126,4 +146,9 @@ void neon_aes_encrypt(const uint8_t *input, uint8_t *output, const uint8x16_t *e
 void neon_aes_decrypt(const uint8_t *input, uint8_t *output, const uint8x16_t *decr_round_key);
 void neon_aes_encrypt_single_buffer(uint8_t *state, const uint8x16_t *encr_round_key);
 void neon_aes_decrypt_single_buffer(uint8_t *state, const uint8x16_t *decr_round_key);
+#endif
+
+#ifdef X86_64_AESNI_ACCEL
+void aesni_encrypt(uint8_t *block, const __m128i *encr_round_key);
+void aesni_decrypt(uint8_t *block, const __m128i *decr_round_key);
 #endif

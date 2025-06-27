@@ -1,4 +1,9 @@
 # 🔐 CORD-AES
+[![License](https://img.shields.io/github/license/packetcord/cord-aes)](https://github.com/packetcord/cord-aes/blob/main/LICENSE)
+[![Lines of Code](https://img.shields.io/tokei/lines/github/packetcord/cord-aes)](https://github.com/packetcord/cord-aes)
+[![Pure Software](https://img.shields.io/badge/Pure‑Software‑Implementation‑blue)](https://github.com/packetcord/cord-aes)
+[![AES‑NI Acceleration](https://img.shields.io/badge/AES--NI‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
+[![NEON Acceleration](https://img.shields.io/badge/NEON‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
 
 Highly configurable AES-128/192/256 cipher implementation to work on any device from small microcontrollers to the latest hardware crypto-accelerated CPUs (Intel/AMD/ARMv8).
 
@@ -22,9 +27,18 @@ Or you can even be a bit more specific with the exact core - an example with Tor
 gcc -I includes/ -mcpu=cortex-a53+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
 ```
 
-- **For the *x86-64 AES_NI* (both for AMD and Intel) accelerated implementation**
+- **For the *x86-64 AES-NI* (both for AMD and Intel) accelerated implementation**
 ```bash
-TBD
+gcc -I includes/ -march=native -msse2 -maes -o main main.c src/aes_cipher.c src/aes_helpers.c
+```
+
+Toggle the defines inside *aes_cipher.h* to enable the AES-NI or NEON acceleration.
+```c
+//
+// Hardware acceleration
+//
+#define X86_64_AESNI_ACCEL
+#define ARM_NEON_AES_ACCEL
 ```
 
 **And simply run the example via:**
@@ -148,8 +162,18 @@ static const uint8_t mul_by_13_lut[256];
 static const uint8_t mul_by_14_lut[256];
 ```
 
-### 🧱 Hardware acceleration via the AES instructions (applies to x86-64, ARMv8)
-... in progress ...
+### 🧱 Hardware acceleration
+Along with the pure software implementation, the library also provides support for hardware acceleration, utilising the specialised AES instructions in the x86-64 and AArch64 architectures.
+Inside *aes_cipher.h* there are two defines to enable either of them:
+
+```c
+#define X86_64_AESNI_ACCEL
+```
+```c
+#define ARM_NEON_AES_ACCEL
+```
+
+> ⚠️ **Note**: AES-NI is enabled by default.
 
 ### 📐 X-Major Order (Column or Row)
 When working with AES, understanding how the 16-byte input is interpreted internally is essential. AES operates on a 4x4 **state matrix** of bytes, which is typically filled **column by column** — a format known as **column-major order**.
