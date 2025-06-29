@@ -1,4 +1,4 @@
-name: Build & Test cord-aes
+name: Build & Test CORD-AES
 
 on:
   push:
@@ -29,9 +29,9 @@ jobs:
       run: |
         case "${{ matrix.target }}" in
           software)
-            gcc -I includes/ -c main.c -o main.o
-            gcc -I includes/ -c src/aes_cipher.c -o aes_cipher.o
-            gcc -I includes/ -c src/aes_helpers.c -o aes_helpers.o
+            gcc -I includes/ -D X86_64_AESNI_ACCEL=0 -c main.c -o main.o
+            gcc -I includes/ -D X86_64_AESNI_ACCEL=0 -c src/aes_cipher.c -o aes_cipher.o
+            gcc -I includes/ -D X86_64_AESNI_ACCEL=0 -c src/aes_helpers.c -o aes_helpers.o
             gcc -o main main.o aes_cipher.o aes_helpers.o
             ;;
           armv8)
