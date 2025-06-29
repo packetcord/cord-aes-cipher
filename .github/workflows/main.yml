@@ -1,4 +1,4 @@
-name: Build & Run
+name: Build & Run (x86-64 with AES-NI)
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ armv8, cortex-a53, x86_64 ]
+        target: [ x86_64 ]
 
     continue-on-error: ${{ contains('armv8 cortex-a53', matrix.target) }}
 
