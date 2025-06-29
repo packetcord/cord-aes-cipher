@@ -1,0 +1,44 @@
+name: Build & Test cord-aes
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-matrix:
+    name: Build on ${{ matrix.target }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [ software, armv8, cortex-a53, x86_64 ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y gcc
+
+    - name: Build for ${{ matrix.target }}
+      run: |
+        case "${{ matrix.target }}" in
+          software)
+            gcc -I includes/ -o main main.c src/aes_cipher.c src/aes_helpers.c
+            ;;
+          armv8)
+            gcc -I includes/ -march=armv8-a+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
+            ;;
+          cortex-a53)
+            gcc -I includes/ -mcpu=cortex-a53+crypto -o main main.c src/aes_cipher.c src/aes_helpers.c
+            ;;
+          x86_64)
+            gcc -I includes/ -march=native -msse2 -maes -o main main.c src/aes_cipher.c src/aes_helpers.c
+            ;;
+        esac
+
+    - name: Run example (Optional)
+      if: matrix.target == 'software' || matrix.target == 'x86_64'
+      run: ./main
