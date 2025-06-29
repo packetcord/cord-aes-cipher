@@ -1,5 +1,5 @@
 # 🔐 CORD-AES
-[![Pure Software](https://img.shields.io/badge/Feature-Pure--Software-brightgreen)](https://github.com/packetcord/cord-aes)
+[![Software Implementation](https://img.shields.io/badge/Software-Implementation-brightgreen)](https://github.com/packetcord/cord-aes)
 [![AES‑NI Acceleration](https://img.shields.io/badge/Feature-AES--NI‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
 [![NEON Acceleration](https://img.shields.io/badge/Feature-NEON‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
 
