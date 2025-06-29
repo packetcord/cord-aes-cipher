@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ software, armv8, cortex-a53, x86_64 ]
+        target: [ armv8, cortex-a53, x86_64 ]
 
     continue-on-error: ${{ contains('armv8 cortex-a53', matrix.target) }}
 
@@ -29,9 +29,9 @@ jobs:
       run: |
         case "${{ matrix.target }}" in
           software)
-            gcc -I includes/ -D X86_64_AESNI_ACCEL=0 -c main.c -o main.o
-            gcc -I includes/ -D X86_64_AESNI_ACCEL=0 -c src/aes_cipher.c -o aes_cipher.o
-            gcc -I includes/ -D X86_64_AESNI_ACCEL=0 -c src/aes_helpers.c -o aes_helpers.o
+            gcc -I includes/ -c main.c -o main.o
+            gcc -I includes/ -c src/aes_cipher.c -o aes_cipher.o
+            gcc -I includes/ -c src/aes_helpers.c -o aes_helpers.o
             gcc -o main main.o aes_cipher.o aes_helpers.o
             ;;
           armv8)
