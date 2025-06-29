@@ -1,4 +1,4 @@
-name: Build & Test CORD-AES
+name: Build & Run
 
 on:
   push:
