@@ -1,7 +1,7 @@
 # 🔐 CORD-AES-CIPHER
-[![Software Implementation](https://img.shields.io/badge/Software-Implementation-brightgreen)](https://github.com/packetcord/cord-aes)
-[![AES‑NI Acceleration](https://img.shields.io/badge/Feature-AES--NI‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
-[![NEON Acceleration](https://img.shields.io/badge/Feature-NEON‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes)
+[![Software Implementation](https://img.shields.io/badge/Software-Implementation-brightgreen)](https://github.com/packetcord/cord-aes-cipher)
+[![AES‑NI Acceleration](https://img.shields.io/badge/Feature-AES--NI‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes-cipher)
+[![NEON Acceleration](https://img.shields.io/badge/Feature-NEON‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes-cipher)
 
 Highly configurable AES-128/192/256 cipher implementation to work on any device from small microcontrollers to the latest hardware crypto-accelerated CPUs (Intel/AMD/ARMv8).
 
@@ -121,7 +121,7 @@ The AES key is a tricky point when it comes to memory optimisation, especially o
 As described above, the expanded key is either 176, 208 or even 240 bytes long and even though the "initial" original key could be stored in the flash memory, the expansion happens
 at runtime which means that it will end up in the main memory (RAM).
 
-The CORD-AES library comes with the following helper function (inside *aes_helpers.c* and *aes_helpers.h* files):
+The CORD-AES-CIPHER library comes with the following helper function (inside *aes_helpers.c* and *aes_helpers.h* files):
 
 ```c
 void print_expanded_key(uint8_t expanded_key[Nb][AES_WORDS]);
@@ -230,7 +230,7 @@ Row 2: 0x08, 0x09, 0x0A, 0x0B
 Row 3: 0x0C, 0x0D, 0x0E, 0x0F
 ```
 
-### 🧬 Flexibility in the AES-CORD Library
+### 🧬 Flexibility in the CORD-AES-CIPHER Library
 This AES implementation adheres to the standard column-major memory layout by default. However, for advanced use cases, experimentation, or obfuscation, you can switch to row-major layout easily.
 
 ### ✅ Possible Benefits of Layout Switching
