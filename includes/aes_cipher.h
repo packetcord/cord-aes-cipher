@@ -113,15 +113,6 @@
 #define AES_BLK_LEN     16
 
 extern uint8_t aes_expanded_key[Nb][AES_WORDS];
-static const uint8_t round_constants_arr[11];
-static const uint8_t sbox[256];
-static const uint8_t inverse_sbox[256];
-static const uint8_t mul_by_2_lut[256];
-static const uint8_t mul_by_3_lut[256];
-static const uint8_t mul_by_9_lut[256];
-static const uint8_t mul_by_11_lut[256];
-static const uint8_t mul_by_13_lut[256];
-static const uint8_t mul_by_14_lut[256];
 
 void expand_key(uint8_t K[Nb][Nk], uint8_t W[Nb][AES_WORDS]);
 uint8_t multiply(uint8_t x, uint8_t y);
