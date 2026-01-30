@@ -1,14 +1,14 @@
-# 🔐 CORD-AES-CIPHER
+# CORD-AES-CIPHER
 [![Software Implementation](https://img.shields.io/badge/Software-Implementation-brightgreen)](https://github.com/packetcord/cord-aes-cipher)
 [![AES‑NI Acceleration](https://img.shields.io/badge/Feature-AES--NI‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes-cipher)
 [![NEON Acceleration](https://img.shields.io/badge/Feature-NEON‑Acceleration‑Supported-brightgreen)](https://github.com/packetcord/cord-aes-cipher)
 
 Highly configurable AES-128/192/256 cipher implementation to work on any device from small microcontrollers to the latest hardware crypto-accelerated CPUs (Intel/AMD/ARMv8).
 
-> ⚠️ **Note**: This library focuses on the **core AES cipher**, providing a standalone, mode-agnostic engine suitable for integration into higher-level encryption schemes.
+> **Note**: This library focuses on the **core AES cipher**, providing a standalone, mode-agnostic engine suitable for integration into higher-level encryption schemes.
 Cipher modes such as CBC, CTR, and GCM are about to be implemented separately.
 
-## 🔧 Build Instructions
+## Build Instructions
 To compile the example, run the following command in the root directory:
 
 - **For the *pure software* implementation**
@@ -46,12 +46,12 @@ Toggle the defines inside *aes_cipher.h* to enable the AES-NI or NEON accelerati
 
 In case you are intersted in more details related to AES, the library implementation and its fine tuning capabilities, you can continue reading the below lines...
 
-## 🧠 What is AES?
+## What is AES?
 
 **AES (Advanced Encryption Standard)** is a **block cipher** standardized by NIST in 2001. It encrypts fixed-size blocks of **128 bits (16 bytes)** using keys of varying lengths:
-- 🔑 **128-bit key**
-- 🔑 **192-bit key**
-- 🔑 **256-bit key**
+- **128-bit key**
+- **192-bit key**
+- **256-bit key**
 
 AES performs a series of transformations on the input data through multiple rounds:
 - 128-bit key → **10 rounds**
@@ -64,16 +64,16 @@ Each round consists of the following operations:
 3. **Mix Columns**
 4. **Add Round Key**
 
-## 🧩 Cipher Modes (CBC, CTR, GCM, etc.)
+## Cipher Modes (CBC, CTR, GCM, etc.)
 AES on its own only encrypts individual blocks. **Cipher modes** define how to apply AES to longer messages or to add features like randomness or authentication:
 
 - **CBC (Cipher Block Chaining)** – Adds dependency between blocks.
 - **CTR (Counter Mode)** – Converts AES into a stream cipher.
 - **GCM (Galois/Counter Mode)** – Adds authentication (AEAD).
 
-> 🧱 This library **does not** implement these modes directly, but is planned to be supported (either within this repo or via separate ones).
+> This library **does not** implement these modes directly, but is planned to be supported (either within this repo or via separate ones).
 
-## 🔑 Key Expansion
+## Key Expansion
 
 The "Key Size" refers to the original size of the key (the number after the AES abbreviation: AES-**128**, AES-**192** and AES-**256**). It is represented as a matrix of 4 rows and N columns, depending on the key length. 
 
@@ -91,17 +91,17 @@ The "Key Size" refers to the original size of the key (the number after the AES 
 
 AES operates on a **4×4 byte matrix** called the **state**, which evolves with each round. Each N-th round takes a square matrix of 4x4 (16 bytes) from the expanded key rectangular matrix. The longer key (more AES "bits" configuration) results in a longer expanded key and more rounds respectively (more portions of 4x4 squares to be applied as part of the *Add Round Key* operation).
 
-## ⚙️ Fine Tuning
+## Fine Tuning
 As mentioned above, the library is designed to be cool enough by providing the flexibility to be fine tuned for small footprint or performance (including utilisation the AES hardware instructions on any popular architecture).
 
-### 🧱 AES key length
+### AES key length
 The key length is defined by the *AES_KEY_LEN_CONF* macro inside *aes_cipher.h*. The default is set to 128 bit (AES-128):
 ```c
 #define AES_KEY_LEN_CONF 128
 ```
 Possible values are *128*, *192* and *256*.
 
-### 🧱 Mix Columns (refers to the purely software AES, non-hardware accelerated)
+### Mix Columns (refers to the purely software AES, non-hardware accelerated)
 The *Mix Columns* and *Inverse Mix Columns* operations could be configured to work either with focus on preserving CPU cycles or memory (Flash or RAM, depending on where we instruct the compiler to store the look-up table array).
 
 The following macros have been exposed accordingly:
@@ -116,7 +116,7 @@ and
 
 **INVERSE_MIX_COLUMN** can similarly be set to *INVERSE_MIX_COLUMN_LUT* or *INVERSE_MIX_COLUMN_MUL*.
 
-### 🧱 CPU vs RAM vs Flash utilisation (quite relevant for microcontrollers)
+### CPU vs RAM vs Flash utilisation (quite relevant for microcontrollers)
 The AES key is a tricky point when it comes to memory optimisation, especially on microcontrollers with less then 1KB of memory (like the PIC16 series, for example).
 As described above, the expanded key is either 176, 208 or even 240 bytes long and even though the "initial" original key could be stored in the flash memory, the expansion happens
 at runtime which means that it will end up in the main memory (RAM).
@@ -145,7 +145,7 @@ uint8_t aes_expanded_key[Nb][AES_WORDS] = {{ 0x2B, 0x7E, 0x15, 0x16, 0xA0, 0xFA,
 
 So, one can first start coding on their PC, expand the key, export it and copy-paste the array (probably by also making it *const*) inside the embedded project. This way the scheduled key may be tuned to end up in the flash memory of the MCU instead of occupying the limited RAM.
 
-> ⚠️ **Note**: The same approach could (or even should) be applied to the above mentioned look-up tables used for the implementations of *Mix Columns* and *Inverse Mix Columns*.
+> **Note**: The same approach could (or even should) be applied to the above mentioned look-up tables used for the implementations of *Mix Columns* and *Inverse Mix Columns*.
 
 Currently, by default, the look-up tables and other arrays have already been set as *const*, so that they will eventually reside in the flash memory when used on a microcontroller with limited resources:
 ```c
@@ -160,7 +160,7 @@ static const uint8_t mul_by_13_lut[256];
 static const uint8_t mul_by_14_lut[256];
 ```
 
-### 🧱 Hardware acceleration
+### Hardware acceleration
 Along with the pure software implementation, the library also provides support for hardware acceleration, utilising the specialised AES instructions in the x86-64 and AArch64 architectures.
 Inside *aes_cipher.h* there are two defines to enable either of them:
 
@@ -171,14 +171,14 @@ Inside *aes_cipher.h* there are two defines to enable either of them:
 #define ARM_NEON_AES_ACCEL
 ```
 
-> ⚠️ **Note**: AES-NI is enabled by default.
+> **Note**: AES-NI is enabled by default.
 
-### 📐 X-Major Order (Column or Row)
+### X-Major Order (Column or Row)
 When working with AES, understanding how the 16-byte input is interpreted internally is essential. AES operates on a 4x4 **state matrix** of bytes, which is typically filled **column by column** — a format known as **column-major order**.
 
 However, some applications may benefit from using **row-major** order, where the matrix is filled left-to-right, row by row.
 
-### 🔍 What’s the difference?
+### What’s the difference?
 | Format           | Filling Order                     | Description                                       |
 |------------------|-----------------------------------|--------------------------------------------------|
 | **Column-Major** | Top to bottom, left to right      | Fill column 0 from top to bottom, then column 1, etc. |
@@ -186,7 +186,7 @@ However, some applications may benefit from using **row-major** order, where the
 
 ---
 
-### 🧪 Example: Visualising the State Matrix
+### Example: Visualising the State Matrix
 Consider the below 16-byte array:
 
 ```cpp
@@ -198,7 +198,7 @@ uint8_t buffer[16] = {
 };
 ```
 
-### 📦 Column-Major Representation (Default in AES)
+### Column-Major Representation (Default in AES)
 AES fills the state matrix in column-major order by default:
 ```
 | 0x00  0x04  0x08  0x0C |
@@ -214,7 +214,7 @@ Column 2: 0x08, 0x09, 0x0A, 0x0B
 Column 3: 0x0C, 0x0D, 0x0E, 0x0F
 ```
 
-### 📦 Row-Major Representation
+### Row-Major Representation
 In row-major order, the state matrix would look like this:
 ```
 | 0x00  0x01  0x02  0x03 |
@@ -230,19 +230,19 @@ Row 2: 0x08, 0x09, 0x0A, 0x0B
 Row 3: 0x0C, 0x0D, 0x0E, 0x0F
 ```
 
-### 🧬 Flexibility in the CORD-AES-CIPHER Library
+### Flexibility in the CORD-AES-CIPHER Library
 This AES implementation adheres to the standard column-major memory layout by default. However, for advanced use cases, experimentation, or obfuscation, you can switch to row-major layout easily.
 
-### ✅ Possible Benefits of Layout Switching
-- 🔄 **Zero-copy integration** with different data sources and data representations. The library explicitly targets the zero-copy approach - all mapping transformations are done on the key and take place only in the initialisation phase.
-- 🚧 **Slightly more obfuscated output** that may slow down naive reverse engineering.
-- 🧪 **Custom experimentation** with non-standard AES behavior (as long as transformations remain consistent).
+### Possible Benefits of Layout Switching
+- **Zero-copy integration** with different data sources and data representations. The library explicitly targets the zero-copy approach - all mapping transformations are done on the key and take place only in the initialisation phase.
+- **Slightly more obfuscated output** that may slow down naive reverse engineering.
+- **Custom experimentation** with non-standard AES behavior (as long as transformations remain consistent).
 
-> 💡 Note 1: Changing the layout does not alter the cryptographic strength of AES if used correctly — it simply changes how the internal state is interpreted and manipulated.
+> Note 1: Changing the layout does not alter the cryptographic strength of AES if used correctly — it simply changes how the internal state is interpreted and manipulated.
 
-> 💡 Note 2: When used with *pure software* implementation, it will provide the same encrypted output. It is also possible to be used in hardware accelearated implementations (AES-NI or NEON), but it will treat the key differently, thus produce different encrypted output. We encourage you to experiment - you may discover interesting representation and obfuscation capabilities as well.
+> Note 2: When used with *pure software* implementation, it will provide the same encrypted output. It is also possible to be used in hardware accelearated implementations (AES-NI or NEON), but it will treat the key differently, thus produce different encrypted output. We encourage you to experiment - you may discover interesting representation and obfuscation capabilities as well.
 
-### 🔧 Switch between layouts
+### Switch between layouts
 
 The following macro defines the default column-major layout:
 ```c
@@ -252,5 +252,3 @@ To switch to row-major layout, change the above to:
 ```c
 #define ROW_MAJOR_MODE
 ```
-
-### 🚀 **Tune, build, run and enjoy!** 🎉
