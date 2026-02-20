@@ -66,7 +66,6 @@ Each round consists of the following operations:
 
 ## Cipher Modes (CBC, CTR, GCM, etc.)
 AES on its own only encrypts individual blocks. **Cipher modes** define how to apply AES to longer messages or to add features like randomness or authentication:
-
 - **CBC (Cipher Block Chaining)** – Adds dependency between blocks.
 - **CTR (Counter Mode)** – Converts AES into a stream cipher.
 - **GCM (Galois/Counter Mode)** – Adds authentication (AEAD).
@@ -112,6 +111,7 @@ and
 ```c
 #define INVERSE_MIX_COLUMN INVERSE_MIX_COLUMN_MUL
 ```
+
 **MIX_COLUMN** can be set to *MIX_COLUMN_LUT* to use an in-memory pre-calculated look-up table with result values or *MIX_COLUMN_MUL* to use the CPU do the actual multiplication in Galois Field.
 
 **INVERSE_MIX_COLUMN** can similarly be set to *INVERSE_MIX_COLUMN_LUT* or *INVERSE_MIX_COLUMN_MUL*.
@@ -122,7 +122,6 @@ As described above, the expanded key is either 176, 208 or even 240 bytes long a
 at runtime which means that it will end up in the main memory (RAM).
 
 The CORD-AES-CIPHER library comes with the following helper function (inside *aes_helpers.c* and *aes_helpers.h* files):
-
 ```c
 void print_expanded_key(uint8_t expanded_key[Nb][AES_WORDS]);
 ```
@@ -132,7 +131,6 @@ uint8_t key[Nb * Nk] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6, 0xAB, 0
 ```
 
 After expansion it looks as follows:
-
 ```c
 //
 // print_expanded_key(aes_expanded_key)
@@ -163,7 +161,6 @@ static const uint8_t mul_by_14_lut[256];
 ### Hardware acceleration
 Along with the pure software implementation, the library also provides support for hardware acceleration, utilising the specialised AES instructions in the x86-64 and AArch64 architectures.
 Inside *aes_cipher.h* there are two defines to enable either of them:
-
 ```c
 #define X86_64_AESNI_ACCEL
 ```
@@ -186,7 +183,6 @@ However, some applications may benefit from using **row-major** order, where the
 
 ### Example: Visualising the State Matrix
 Consider the below 16-byte array:
-
 ```cpp
 uint8_t buffer[16] = {
   0x00, 0x01, 0x02, 0x03,
