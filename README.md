@@ -184,8 +184,6 @@ However, some applications may benefit from using **row-major** order, where the
 | **Column-Major** | Top to bottom, left to right      | Fill column 0 from top to bottom, then column 1, etc. |
 | **Row-Major**    | Left to right, top to bottom      | Fill row 0 from left to right, then row 1, etc.      |
 
----
-
 ### Example: Visualising the State Matrix
 Consider the below 16-byte array:
 
